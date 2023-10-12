@@ -2,11 +2,12 @@
 
 import csv
 import pandas as pd
-from itertools import combinations, islice, product
+from itertools import combinations, islice, product, product
 import dataprep
+import concurrent.futures
 
 #variables
-curve_num = 100000
+curve_num = 1000000
 
 #reads in csv of data
 quant = dataprep.replicate_data
@@ -33,11 +34,22 @@ final_combinations = list(islice(product(*copy_number_dict.values()), curve_num)
 #initialise a dictionary for the combinations
 result_dict = {}
 
-#adds curves to the dictionary
-for i, final_combo in enumerate(final_combinations):
+def process_final_combination(i, final_combo):
     subset_ids = [item for sublist in final_combo for item in sublist]
     subset = quant[quant['unique_id'].isin(subset_ids)]
-    result_dict[f'Combination_{i + 1}'] = subset[['Ct', 'copies', 'unique_id']].copy()
+    return f'Combination_{i + 1}', subset[['Ct', 'copies', 'unique_id']].copy()
+
+# Process final combinations using ThreadPoolExecutor
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    futures = {executor.submit(process_final_combination, i, final_combo): (i, final_combo) for i, final_combo in enumerate(final_combinations)}
+
+    result_dict = {}
+    for future in concurrent.futures.as_completed(futures):
+        i, final_combo = futures[future]
+        try:
+            result_dict[i] = future.result()
+        except Exception as e:
+            print(f"Error processing final combination {i}: {e}")
 
 #retrives unqiue standard curves
 for key, df in result_dict.items():
