@@ -6,7 +6,7 @@ from itertools import combinations, islice, product
 import dataprep
 
 #variables
-curve_num = 100000
+curve_num = 100
 
 #reads in csv of data
 quant = dataprep.replicate_data

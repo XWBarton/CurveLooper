@@ -4,36 +4,49 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
 from sklearn.linear_model import LinearRegression
-import pandas as pd
 from scipy.stats import linregress
 from matplotlib.ticker import ScalarFormatter
 import dataprep
+import sys
 
-copies = dataprep.replicate_data['copies'].values
-CtValue = dataprep.replicate_data['Ct'].values
+def my_function(data_received):
+    print("Data received in my_function:", data_received)
+
+if __name__ == "__main__":
+    # The first command-line argument is the script name, so we start from index 1
+    data_from_main_script = sys.argv[1]
+    my_function(data_from_main_script)
+
+#copies = dataprep.replicate_data['copies'].values
+#CtValue = dataprep.replicate_data['Ct'].values
 
 fig = plt.figure(figsize=(12, 6))
 
-slope, intercept, r_value, p_value, std_err = linregress(np.log10(copies), CtValue)
-plt.scatter(copies, CtValue, label='Data', alpha=0.5)
+log_copies = np.log10(copies)
 
-x_values = np.linspace(min(copies), max(copies), 100)
-plt.plot(x_values, slope * np.log10(x_values) + intercept, color='red', label='Linear Fit')
-plt.xscale('log')
+# Perform linear regression on the log-transformed x-values
+slope, intercept, r_value, p_value, std_err = linregress(log_copies, CtValue)
 
-formatter = ScalarFormatter()
-formatter.set_scientific(False)
-plt.gca().xaxis.set_major_formatter(formatter)
+# Predicted values using the linear regression equation
+predicted_values = slope * log_copies + intercept
 
-plt.xlabel('gBlock Copies')
+# Plotting the data and the linear regression line with the original x-values
+plt.scatter(copies, CtValue, label='Data')
+plt.plot(copies, predicted_values, color='red', label='Linear Regression')
+
+# Adding labels and title
+plt.xlabel('Copies')
 plt.ylabel('Ct Value')
-plt.title('Standard Curve')
+plt.xscale('log')  # Set x-axis to log scale
+
+# Displaying the legend
 plt.legend()
+
+# Show the plot
 plt.show()
 
-#Figures
-print(f"R-value: {r_value}")
-print(f"R-squared: {r_value**2}")
-print(f"Line equation: y = {slope:.4f} * log10(x) + {intercept:.4f}")
+# Output the slope, intercept, and other regression statistics
+print("R-value:", r_value)
+print ("R^2-value:", pow(r_value, 2))
+print("Standard Curve Equation: y =", slope, "* x +", intercept)
