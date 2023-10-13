@@ -7,20 +7,21 @@ import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from scipy.stats import linregress
 from matplotlib.ticker import ScalarFormatter
-import dataprep
-import sys
+import dataprep, sys, pickle
+from scipy import stats
 
-def my_function(data_received):
-    print("Data received in my_function:", data_received)
+#retrive the standard curve data (just one combo) from curvelooper.py
+with open('data.pkl', 'rb') as file:
+    curveData = pickle.load(file)
 
-if __name__ == "__main__":
-    # The first command-line argument is the script name, so we start from index 1
-    data_from_main_script = sys.argv[1]
-    my_function(data_from_main_script)
+print("Data received by Standard Curve Generator:")
+print(curveData)
 
-#copies = dataprep.replicate_data['copies'].values
-#CtValue = dataprep.replicate_data['Ct'].values
+#define the copies and CtValue data
+copies = curveData['copies'].values
+CtValue = curveData['Ct'].values
 
+#adujust plot size
 fig = plt.figure(figsize=(12, 6))
 
 log_copies = np.log10(copies)
@@ -44,9 +45,13 @@ plt.xscale('log')  # Set x-axis to log scale
 plt.legend()
 
 # Show the plot
-plt.show()
+#plt.show()
 
 # Output the slope, intercept, and other regression statistics
-print("R-value:", r_value)
-print ("R^2-value:", pow(r_value, 2))
-print("Standard Curve Equation: y =", slope, "* x +", intercept)
+#print("R-value:", r_value)
+#print ("R^2-value:", pow(r_value, 2))
+#print("Standard Curve Equation: y =", slope, "x +", intercept)
+
+
+
+

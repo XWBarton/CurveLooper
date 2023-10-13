@@ -6,7 +6,7 @@ from itertools import combinations, islice, product
 import dataprep
 
 #variables
-curve_num = 100
+curve_num = 1000
 
 #reads in csv of data
 quant = dataprep.replicate_data
@@ -38,13 +38,13 @@ for i, final_combo in enumerate(final_combinations):
     subset_ids = [item for sublist in final_combo for item in sublist]
     subset = quant[quant['unique_id'].isin(subset_ids)]
     result_dict[f'Combination_{i + 1}'] = subset[['Ct', 'copies', 'unique_id']].copy()
-
+"""
 #retrives unqiue standard curves
 for key, df in result_dict.items():
     print(f"Standard Curve: {key}")
     print(df)
     print("\n")
-
+"""
 #retrive selected standard curve
 #chosen_key = 'Combination_666'
 #chosen_dataframe = result_dict[chosen_key]
