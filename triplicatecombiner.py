@@ -5,12 +5,8 @@ import pandas as pd
 from itertools import combinations, islice, product
 import dataprep
 
-#variables
-curve_num = 1000
-
-#reads in csv of data
+curve_num = 10000
 quant = dataprep.replicate_data
-
 
 #adds unqiue replicate id
 quant['unique_id'] = quant.groupby('copies').cumcount() + 1
@@ -45,9 +41,10 @@ for key, df in result_dict.items():
     print(df)
     print("\n")
 """
-#retrive selected standard curve
-#chosen_key = 'Combination_666'
-#chosen_dataframe = result_dict[chosen_key]
-#print(f"DataFrame: {chosen_key}")
-#print(chosen_dataframe)
 
+# retrive selected standard curve
+def retreive_selected_standard_curve(chosen_key):
+    chosen_dataframe = result_dict[chosen_key]
+    #print(f"DataFrame: {chosen_key}")
+    #print(chosen_dataframe)
+    return chosen_dataframe
