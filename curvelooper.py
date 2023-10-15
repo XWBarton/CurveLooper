@@ -12,7 +12,7 @@ chosen_key = "Combination"
 #initalise the dictionary for the regression statistics
 regression_dict = {}  # Initialize an empty dictionary to store results
 
-for i in range(1, 101):
+for i in range(1, triplicatecombiner.curve_num + 1):
     current_key = f'{chosen_key}_{i}'
     
     # Retrieve the chosen_dataframe for the current key
