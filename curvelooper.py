@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 
-import triplicatecombiner
+import randomtriplicatecombiner
 import subprocess, statistics
 import pandas as pd
 import standardcurvegenerator
 import matplotlib.pyplot as plt
 import numpy as np
+from statistics import median
 
 chosen_key = "Combination"
 
 #initalise the dictionary for the regression statistics
 regression_dict = {}  # Initialize an empty dictionary to store results
 
-for i in range(1, triplicatecombiner.curve_num + 1):
+for i in range(1, randomtriplicatecombiner.curve_num + 1):
     current_key = f'{chosen_key}_{i}'
     
     # Retrieve the chosen_dataframe for the current key
-    chosen_dataframe = triplicatecombiner.retreive_selected_standard_curve(current_key)
+    chosen_dataframe = randomtriplicatecombiner.retreive_selected_standard_curve(current_key)
 
     # exec(open("standardcurvegenerator.py").read())
     r_value, r_squared, slope, intercept = standardcurvegenerator.generate_curve_data(chosen_dataframe)
@@ -30,7 +31,7 @@ for i in range(1, triplicatecombiner.curve_num + 1):
     }
 
 print("")
-print(f"For {triplicatecombiner.curve_num} combinations:")
+print(f"For {randomtriplicatecombiner.curve_num} combinations:")
 
 #r value stats
 all_r_values = [entry['r_value'] for entry in regression_dict.values()]
@@ -40,7 +41,7 @@ max_r = max(all_r_values)
 median_r = statistics.median(all_r_values)
 average_r = statistics.mean(all_r_values)
 
-# Print or use the results as needed
+#print r value stats
 print("")
 print("R value")
 print("Min r_value:", min_r)
@@ -56,7 +57,7 @@ max_r_sqaured = max(all_r_sqaured)
 median_r_squared = statistics.median(all_r_sqaured)
 average_r_squared = statistics.mean(all_r_sqaured)
 
-# Print or use the results as needed
+#print r squared stats
 print("R squared")
 print("Min r_squared:", min_r_sqaured)
 print("Max r_squared:", max_r_sqaured)
@@ -64,28 +65,67 @@ print("Median r_squared:", median_r_squared)
 print("Average r_squared:", average_r_squared)
 print("")
 
-"""#equation
-# Extract slope and intercept values
-slopes = [entry['slope'] for entry in regression_dict.values()]
-intercepts = [entry['intercept'] for entry in regression_dict.values()]
+#slope value stats
+all_slope = [entry['slope'] for entry in regression_dict.values()]
 
-# Find minimum and maximum slope and intercept
+slopes = [(all_slope[i+1] - all_slope[i]) for i in range(len(all_slope)-1)]
 min_slope = min(slopes)
 max_slope = max(slopes)
+average_slope = sum(slopes) / len(slopes)
+median_slope = median(slopes)
+
+print("Slope")
+print("Minimum slope:", min_slope)
+print("Max slope:", max_slope)
+print("Average slope:", average_slope)
+print("Median slope:", median_slope)
+print("")
+
+#intercept stats
+all_intercept = [entry['intercept'] for entry in regression_dict.values()]
+
+intercepts = [(all_intercept[i+1] - all_intercept[i]) for i in range(len(all_intercept)-1)]
+
 min_intercept = min(intercepts)
 max_intercept = max(intercepts)
+average_intercept = sum(intercepts) / len(intercepts)
+median_intercept = median(intercepts)
 
-# Generate x values for the plot
-x_values = np.linspace(min(log_copies), max(log_copies), 100)
+print("Intercept")
+print("Minimum intercept:", min_intercept)
+print("Max intercept:", max_intercept)
+print("Average intercept:", average_intercept)
+print("Median intercept:", median_intercept)
+print("")
 
-# Plot the minimum and maximum regression lines
-plt.scatter(log_copies, CtValue, label='Data Points')  # Your actual data points
-plt.plot(x_values, min_slope * x_values + min_intercept, label='Min Regression Line', linestyle='--')
-plt.plot(x_values, max_slope * x_values + max_intercept, label='Max Regression Line', linestyle='--')
 
-# Customize the plot
-plt.xlabel('X-axis Label')
-plt.ylabel('Y-axis Label')
-plt.title('Min and Max Regression Lines')
+#plotting the figures
+
+x = np.linspace(start=0, stop=10, num=100)  # This creates an array of 100 numbers spaced between 0 and 10.
+
+# Use the min and max slope and intercept values from your previous code.
+# Correcting the variable naming
+min_slope_value = min_slope
+max_slope_value = max_slope
+
+# Calculate y values for the regression lines.
+y_min = min_slope_value * x + min_intercept
+y_max = max_slope_value * x + max_intercept
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+# Plotting the regression lines.
+plt.plot(x, y_min, label="Line with Min Slope & Intercept", color='red')
+plt.plot(x, y_max, label="Line with Max Slope & Intercept", color='blue')
+
+# Setting up labels, titles, and legends.
+plt.title('Regression Lines for Min & Max Slope and Intercept')
+plt.xlabel('X values')
+plt.ylabel('Y values')
 plt.legend()
-plt.show()"""
+
+# Display the plot.
+plt.grid(True)
+plt.tight_layout()
+plt.show()

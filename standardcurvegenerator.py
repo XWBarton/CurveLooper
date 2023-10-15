@@ -30,6 +30,8 @@ def generate_curve_data(curveData) -> list[int, int, int]:
 
     r_squared = r_value ** 2
 
+    #print(slope)
+
     return r_value, r_squared, slope, intercept,
 """
     # Predicted values using the linear regression equation
