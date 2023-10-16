@@ -173,11 +173,11 @@ y_max = max_intercept_value * x + max_intercept
 plt.figure(figsize=(10, 6))
 
 # Plotting the regression lines.
-plt.plot(x, y_min, label="Line with Min intercept & Intercept", color='red')
-plt.plot(x, y_max, label="Line with Max intercept & Intercept", color='blue')
+plt.plot(x, y_min, label="Minimum slope & intercept", color='red')
+plt.plot(x, y_max, label="Maximum slope & Intercept", color='blue')
 
 # Setting up labels, titles, and legends.
-plt.title('Regression Lines for Min & Max intercept and Intercept')
+plt.title('Regression lines using the minimum and maximum slope and intercepts')
 plt.xlabel('X values')
 plt.ylabel('Y values')
 plt.legend()
