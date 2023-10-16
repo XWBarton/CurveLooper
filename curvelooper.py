@@ -20,7 +20,7 @@ for i in range(1, randomtriplicatecombiner.curve_num + 1):
     chosen_dataframe = randomtriplicatecombiner.retreive_selected_standard_curve(current_key)
 
     # exec(open("standardcurvegenerator.py").read())
-    r_value, r_squared, slope, intercept = standardcurvegenerator.generate_curve_data(chosen_dataframe)
+    r_value, r_squared, slope, intercept,  = standardcurvegenerator.generate_curve_data(chosen_dataframe)
 
      # Store results in the dictionary
     regression_dict[current_key] = {
@@ -35,7 +35,6 @@ print(f"For {randomtriplicatecombiner.curve_num} combinations:")
 
 #r value stats
 all_r_values = [entry['r_value'] for entry in regression_dict.values()]
-
 min_r = min(all_r_values)
 max_r = max(all_r_values)
 median_r = statistics.median(all_r_values)
@@ -50,7 +49,7 @@ print("Median r_value:", median_r)
 print("Average r_value:", average_r)
 print("")
 
-#r value stats
+#r squared stats
 all_r_sqaured = [entry['r_squared'] for entry in regression_dict.values()]
 min_r_sqaured = min(all_r_sqaured)
 max_r_sqaured = max(all_r_sqaured)
@@ -65,62 +64,120 @@ print("Median r_squared:", median_r_squared)
 print("Average r_squared:", average_r_squared)
 print("")
 
-#slope value stats
-all_slope = [entry['slope'] for entry in regression_dict.values()]
+#slope and intercept value stats (this is wacky tebbaccy becuase its a numpy64 or somthing)
 
-slopes = [(all_slope[i+1] - all_slope[i]) for i in range(len(all_slope)-1)]
-min_slope = min(slopes)
-max_slope = max(slopes)
-average_slope = sum(slopes) / len(slopes)
-median_slope = median(slopes)
+"""for slope in regression_dict:
+    if slope in regression_dict:
+        value = regression_dict[slope]
+        print(f"The value for '{slope}' is '{value}'")"""
+
+#max slope
+desired_key = 'slope'
+max_slope = None
+
+for entry, nested_dict in regression_dict.items():
+    if desired_key in nested_dict:
+        value = nested_dict[desired_key]
+        if max_slope is None or value > max_slope:
+            max_slope = value
+
+#min slope
+desired_key = 'slope'
+min_slope = None
+
+for entry, nested_dict in regression_dict.items():
+    if desired_key in nested_dict:
+        value = nested_dict[desired_key]
+        if min_slope is None or value < min_slope:
+            min_slope = value
+
+#median slope
+desired_key = 'slope'
+
+median_slope = [nested_dict[desired_key] for nested_dict in regression_dict.values() if desired_key in nested_dict]
+
+median_slope = np.median(median_slope)
+
+#average slope
+desired_key = 'slope'
+
+avg_slope = [nested_dict[desired_key] for nested_dict in regression_dict.values() if desired_key in nested_dict]
+
+avg_slope = np.mean(avg_slope)
 
 print("Slope")
-print("Minimum slope:", min_slope)
+print("Min slope:", min_slope)
 print("Max slope:", max_slope)
-print("Average slope:", average_slope)
 print("Median slope:", median_slope)
+print("Average slope:", avg_slope)
 print("")
 
-#intercept stats
-all_intercept = [entry['intercept'] for entry in regression_dict.values()]
+#intercept value stats 
 
-intercepts = [(all_intercept[i+1] - all_intercept[i]) for i in range(len(all_intercept)-1)]
+#max intercept
+desired_key = 'intercept'
+max_intercept = None
 
-min_intercept = min(intercepts)
-max_intercept = max(intercepts)
-average_intercept = sum(intercepts) / len(intercepts)
-median_intercept = median(intercepts)
+for entry, nested_dict in regression_dict.items():
+    if desired_key in nested_dict:
+        value = nested_dict[desired_key]
+        if max_intercept is None or value > max_intercept:
+            max_intercept = value
+
+#min intercept
+desired_key = 'intercept'
+min_intercept = None
+
+for entry, nested_dict in regression_dict.items():
+    if desired_key in nested_dict:
+        value = nested_dict[desired_key]
+        if min_intercept is None or value < min_intercept:
+            min_intercept = value
+
+#median intercept
+desired_key = 'intercept'
+
+median_intercept = [nested_dict[desired_key] for nested_dict in regression_dict.values() if desired_key in nested_dict]
+
+median_intercept = np.median(median_intercept)
+
+#average intercept
+desired_key = 'intercept'
+
+avg_intercept = [nested_dict[desired_key] for nested_dict in regression_dict.values() if desired_key in nested_dict]
+
+avg_intercept = np.mean(avg_intercept)
 
 print("Intercept")
-print("Minimum intercept:", min_intercept)
+print("Min intercept:", min_intercept)
 print("Max intercept:", max_intercept)
-print("Average intercept:", average_intercept)
 print("Median intercept:", median_intercept)
+print("Average intercept:", avg_intercept)
 print("")
-
 
 #plotting the figures
 
 x = np.linspace(start=0, stop=10, num=100)  # This creates an array of 100 numbers spaced between 0 and 10.
 
-# Use the min and max slope and intercept values from your previous code.
+# Use the min and max intercept and intercept values from your previous code.
 # Correcting the variable naming
-min_slope_value = min_slope
-max_slope_value = max_slope
+min_intercept_value = min_intercept
+max_intercept_value = max_intercept
 
 # Calculate y values for the regression lines.
-y_min = min_slope_value * x + min_intercept
-y_max = max_slope_value * x + max_intercept
+y_min = min_intercept_value * x + min_intercept
+y_max = max_intercept_value * x + max_intercept
+
 
 # Plotting
 plt.figure(figsize=(10, 6))
 
 # Plotting the regression lines.
-plt.plot(x, y_min, label="Line with Min Slope & Intercept", color='red')
-plt.plot(x, y_max, label="Line with Max Slope & Intercept", color='blue')
+plt.plot(x, y_min, label="Line with Min intercept & Intercept", color='red')
+plt.plot(x, y_max, label="Line with Max intercept & Intercept", color='blue')
 
 # Setting up labels, titles, and legends.
-plt.title('Regression Lines for Min & Max Slope and Intercept')
+plt.title('Regression Lines for Min & Max intercept and Intercept')
 plt.xlabel('X values')
 plt.ylabel('Y values')
 plt.legend()

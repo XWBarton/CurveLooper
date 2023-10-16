@@ -31,6 +31,7 @@ def generate_curve_data(curveData) -> list[int, int, int]:
     r_squared = r_value ** 2
 
     #print(slope)
+    #print(intercept)
 
     return r_value, r_squared, slope, intercept,
 """
