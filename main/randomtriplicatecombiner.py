@@ -9,7 +9,14 @@ from math import comb
 
 start_time = time.time()
 
-curve_num = 100000
+#curve_num = 100000
+
+curve_num = input("Enter the number of standard curve combinations you would like to generate: ")
+try:
+    curve_num = int(curve_num)
+except ValueError:
+    print("That's not a valid integer!")
+
 quant = dataprep.replicate_data
 
 # Count how many unique 'copies' categories
